@@ -24,7 +24,7 @@ class CodeEditor(QPlainTextEdit):
         dark_theme_style = """
         QPlainTextEdit {
             color: #abb2bf;
-            border: 1px solid #333;
+            border: none;
             font-family: 'Courier New', monospace;
             font-size: 14px;
         }
