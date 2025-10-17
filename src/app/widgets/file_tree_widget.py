@@ -20,6 +20,7 @@ class TreeView(QTreeView):
 
 class FileExplorer(QWidget):
     file_selected = Signal(str)
+    folder_opened = Signal(str)
 
     def __init__(self):
         super().__init__()
@@ -144,6 +145,7 @@ class FileExplorer(QWidget):
             self.tree_view.setColumnHidden(2, True)
             self.tree_view.setColumnHidden(3, True)
             self.stacked_widget.setCurrentWidget(self.tree_view_screen)
+            self.folder_opened.emit(folder_path)
     
     def on_item_double_clicked(self, index):
         path = self.model.filePath(index)

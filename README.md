@@ -10,3 +10,12 @@ a basic text editor used as a development environment
 - multiplas janelas de codigo?
 - criar novos arquivos dentro da seçao de gerenciar arquivos
 - redimensionar proporçoes
+
+o terminal é apenas um pseudo-terminal
+
+- seção principal abre no modo de escrita ja
+- cor do terminal
+- terminal nao funciona tao bem
+- formataçao das pastas
+- compilar tudo em um exe
+- configuraçoes no json
