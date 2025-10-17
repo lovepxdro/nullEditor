@@ -1,6 +1,5 @@
 # src/app/widgets/file_tree_widget.py
 
-# Mudança 1: Importar os módulos e widgets necessários
 import os
 import shutil
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QPushButton, QTreeView, 
@@ -26,7 +25,6 @@ class FileExplorer(QWidget):
         super().__init__()
         self.stacked_widget = QStackedWidget()
         
-        # ... (welcome_screen e tree_view_screen continuam iguais)
         self.welcome_screen = QWidget()
         welcome_layout = QVBoxLayout(self.welcome_screen)
         open_folder_button = QPushButton("Abrir Pasta")
@@ -53,11 +51,9 @@ class FileExplorer(QWidget):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(self.stacked_widget)
 
-        # --- MUDANÇA 2: Habilitar e conectar o menu de contexto ---
         self.tree_view.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree_view.customContextMenuRequested.connect(self.show_context_menu)
 
-    # --- MUDANÇA 3: Todos os novos métodos para as funcionalidades ---
     def show_context_menu(self, position):
         index = self.tree_view.indexAt(position)
         path = self.model.filePath(index) if index.isValid() else self.model.rootPath()
@@ -69,15 +65,12 @@ class FileExplorer(QWidget):
         rename_action = menu.addAction("Renomear")
         delete_action = menu.addAction("Deletar")
 
-        # Desabilita ações que não fazem sentido se não houver um item selecionado
         if not index.isValid():
             rename_action.setEnabled(False)
             delete_action.setEnabled(False)
 
-        # Executa o menu e captura a ação escolhida pelo usuário
         action = menu.exec(self.tree_view.viewport().mapToGlobal(position))
 
-        # Chama a função correspondente à ação escolhida
         if action == new_file_action:
             self.new_file(path)
         elif action == new_folder_action:
@@ -88,7 +81,6 @@ class FileExplorer(QWidget):
             self.delete_item(path)
 
     def new_file(self, base_path):
-        # Se o caminho base é um arquivo, usa o diretório pai
         if os.path.isfile(base_path):
             base_path = os.path.dirname(base_path)
         
@@ -96,7 +88,7 @@ class FileExplorer(QWidget):
         if ok and file_name:
             file_path = os.path.join(base_path, file_name)
             try:
-                open(file_path, 'a').close() # Cria um arquivo vazio
+                open(file_path, 'a').close()
             except Exception as e:
                 QMessageBox.critical(self, "Erro", f"Não foi possível criar o arquivo:\n{e}")
 
@@ -132,7 +124,7 @@ class FileExplorer(QWidget):
                 if os.path.isfile(path):
                     os.remove(path)
                 elif os.path.isdir(path):
-                    shutil.rmtree(path) # shutil.rmtree deleta pastas com conteúdo
+                    shutil.rmtree(path)
             except Exception as e:
                 QMessageBox.critical(self, "Erro", f"Não foi possível deletar:\n{e}")
 

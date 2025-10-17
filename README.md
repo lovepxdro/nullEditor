@@ -19,3 +19,5 @@ o terminal é apenas um pseudo-terminal
 - formataçao das pastas
 - compilar tudo em um exe
 - configuraçoes no json
+- multiplos terminais
+- bug com comando clear

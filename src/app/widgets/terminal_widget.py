@@ -1,108 +1,132 @@
 # src/app/widgets/terminal_widget.py
 
-import subprocess
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QLineEdit
-from PySide6.QtCore import Qt, QObject, Signal, QThread, QDir
+import sys
+import os
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QPlainTextEdit
+from PySide6.QtCore import QProcess, Qt, QDir
+from PySide6.QtGui import QTextCursor, QKeyEvent, QMouseEvent, QKeySequence, QColor, QTextOption
 
-# --- O Worker (CommandRunner) permanece o mesmo ---
-class CommandRunner(QObject):
-    output_ready = Signal(str)
-    finished = Signal()
-
-    def run_command(self, command, working_directory):
-        try:
-            process = subprocess.Popen(
-                command,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                encoding='utf-8',
-                errors='replace',
-                cwd=working_directory
-            )
-            for line in iter(process.stdout.readline, ''):
-                self.output_ready.emit(line)
-            process.stdout.close()
-            process.wait()
-        except Exception as e:
-            self.output_ready.emit(f"Erro ao executar o comando: {e}\n")
-        finally:
-            self.finished.emit()
-
-class TerminalWidget(QWidget):
-    command_to_run = Signal(str, str)
-
-    def __init__(self):
-        super().__init__()
-        self.working_directory = None
-
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(5, 5, 5, 5)
-        layout.setSpacing(5)
-        self.output_area = QTextEdit()
-        self.output_area.setReadOnly(True)
-        self.input_line = QLineEdit()
-        self.input_line.setPlaceholderText("Abra uma pasta para começar a usar o terminal...")
+class TerminalDisplay(QPlainTextEdit):
+    def __init__(self, process: QProcess, parent=None):
+        super().__init__(parent)
+        self.process = process
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.setUndoRedoEnabled(False)
+        self.setWordWrapMode(QTextOption.WrapMode.NoWrap)
         
-        # --- MUDANÇA 1: Corrigindo o Estilo ---
-        # Adicionamos 'QWidget' para garantir que o fundo do widget principal também seja escuro.
-        dark_theme_style = """
-            QWidget {
-                background-color: #1e2227;
-            }
-            QTextEdit, QLineEdit {
-                background-color: #1e2227;
+        self.prompt = ""
+        self.prompt_position = 0
+
+        self.setStyleSheet("""
+            QPlainTextEdit {
                 color: #dcdfe4;
-                border: 1px solid #333;
-                font-family: 'Courier New', monospace;
+                border: none;
+                font-family: "Consolas", "Courier New", monospace;
                 font-size: 13px;
+                padding: 5px;
             }
-        """
-        self.setStyleSheet(dark_theme_style)
-        # --- FIM DA MUDANÇA 1 ---
+        """)
 
-        layout.addWidget(self.output_area)
-        layout.addWidget(self.input_line)
+    def _insert_prompt(self):
+        self.moveCursor(QTextCursor.MoveOperation.End)
+        self.prompt_position = self.textCursor().position()
 
-        # Desabilita a entrada no início, pois nenhuma pasta está aberta
-        self.input_line.setEnabled(False)
+    def mousePressEvent(self, event: QMouseEvent):
+        super().mousePressEvent(event)
+        self.setFocus()
+    
+    def keyPressEvent(self, event: QKeyEvent):
+        cursor = self.textCursor()
 
-        self.thread = QThread()
-        self.worker = CommandRunner()
-        self.worker.moveToThread(self.thread)
-        self.input_line.returnPressed.connect(self.on_command_entered)
-        self.command_to_run.connect(self.worker.run_command)
-        self.worker.output_ready.connect(self.append_output)
-        self.worker.finished.connect(self.on_command_finished)
-        self.thread.start()
+        if cursor.position() < self.prompt_position:
+            cursor.setPosition(self.document().characterCount() - 1)
+            self.setTextCursor(cursor)
 
-    def set_working_directory(self, path):
-        self.working_directory = path
-        self.output_area.clear()
-        self.output_area.append(f"Diretório de trabalho: {path}\n")
-        # Habilita a entrada e muda o texto de ajuda
-        self.input_line.setEnabled(True)
-        self.input_line.setPlaceholderText("Digite um comando e pressione Enter...")
-        self.input_line.setFocus() # Coloca o foco aqui para o usuário poder digitar
+        key = event.key()
 
-    def on_command_entered(self):
-        # --- MUDANÇA 2: Verificação de Segurança ---
-        # Não faz nada se nenhuma pasta estiver aberta ou se um comando já estiver rodando
-        if not self.working_directory or not self.input_line.isEnabled():
+        if key in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+            line_block = self.document().lastBlock()
+            line = line_block.text()
+            
+            command = self.toPlainText()[self.prompt_position:].strip()
+            
+            self.appendPlainText("")
+            
+            if command.lower() == "cls" or command.lower() == "clear":
+                self.clear()
+            elif command:
+                self.process.write((command + os.linesep).encode())
+            else:
+                self.process.write(os.linesep.encode())
+                
             return
 
-        command = self.input_line.text().strip()
-        if command:
-            self.input_line.clear()
-            self.output_area.append(f"[{self.working_directory}]$ {command}\n") # Estilo de prompt
-            self.input_line.setEnabled(False)
-            self.command_to_run.emit(command, self.working_directory)
+        if key == Qt.Key.Key_Backspace:
+            if cursor.position() > self.prompt_position:
+                super().keyPressEvent(event)
+            return
+        
+        if event.matches(QKeySequence.StandardKey.Copy):
+            self.process.write(b"\x03")
+            return
 
-    def append_output(self, text):
-        self.output_area.insertPlainText(text)
-        self.output_area.verticalScrollBar().setValue(self.output_area.verticalScrollBar().maximum())
+        super().keyPressEvent(event)
 
-    def on_command_finished(self):
-        self.input_line.setEnabled(True)
-        self.input_line.setFocus()
+class TerminalWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.process = QProcess()
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        self.display = TerminalDisplay(self.process)
+        layout.addWidget(self.display)
+
+        self.process.setProcessChannelMode(QProcess.ProcessChannelMode.MergedChannels)
+        self.process.readyReadStandardOutput.connect(self.read_output)
+        self.process.finished.connect(self.process_finished)
+        self.process.errorOccurred.connect(self.process_error)
+
+        self.start_shell()
+
+    def start_shell(self):
+        self.display.clear()
+
+        if sys.platform == "win32":
+            shell_program = "cmd.exe"
+        else:
+            shell_program = os.environ.get("SHELL", "/bin/bash")
+
+        self.process.setProgram(shell_program)
+        self.process.setWorkingDirectory(QDir.homePath())
+        self.process.start()
+        self.display.setFocus()
+
+    def set_working_directory(self, path):
+        if self.process.state() != QProcess.ProcessState.Running:
+            return
+
+        command = f'cd /d "{path}"{os.linesep}' if sys.platform == "win32" else f'cd "{path}"{os.linesep}'
+        self.process.write(command.encode())
+        
+        self.display.clear()
+        self.process.write(os.linesep.encode())
+
+    def read_output(self):
+        output = str(self.process.readAllStandardOutput(), sys.getdefaultencoding(), 'replace')
+        self.display.moveCursor(QTextCursor.MoveOperation.End)
+        self.display.insertPlainText(output)
+        self.display.moveCursor(QTextCursor.MoveOperation.End)
+        self.display.prompt_position = self.display.textCursor().position()
+
+    def process_finished(self):
+        self.display.appendPlainText("\n[PROCESSO DO TERMINAL ENCERRADO, REINICIANDO...]")
+        self.start_shell()
+
+    def process_error(self, error):
+        self.display.appendPlainText(f"\n[ERRO NO PROCESSO: {error}]")
+
+    def closeEvent(self, event):
+        if self.process.state() == QProcess.ProcessState.Running:
+            self.process.kill()
+        super().closeEvent(event)

@@ -2,7 +2,6 @@
 import sys
 from src.app.widgets.editor_widget import CodeEditor
 from src.app.widgets.file_tree_widget import FileExplorer
-# Mudança 1: Importar nosso novo TerminalWidget
 from src.app.widgets.terminal_widget import TerminalWidget
 from PySide6.QtWidgets import QApplication, QMainWindow, QSplitter, QLabel, QFileDialog, QMessageBox
 from PySide6.QtGui import QIcon, QAction
@@ -21,36 +20,31 @@ class MainWindow(QMainWindow):
         self.editor = CodeEditor()
         self.file_tree = FileExplorer()
         
-        # --- MUDANÇAS AQUI ---
-        # 2. Criamos uma instância do nosso TerminalWidget
         self.terminal = TerminalWidget()
-        # O QLabel 'terminal_placeholder' foi removido.
-        # --- FIM DAS MUDANÇAS ---
 
         top_splitter.addWidget(self.editor)
         top_splitter.addWidget(self.file_tree)
         top_splitter.setSizes([840, 360])
         main_splitter.addWidget(top_splitter)
 
-        # 3. Adicionamos o 'self.terminal' ao splitter
         main_splitter.addWidget(self.terminal)
         main_splitter.setSizes([540, 180])
         self.setCentralWidget(main_splitter)
         
-        # ... (o resto do __init__ e da classe continua o mesmo)
         self.setup_actions()
         self.file_tree.file_selected.connect(self.open_file)
         self.editor.textChanged.connect(self.mark_as_dirty)
+        self.file_tree.folder_opened.connect(self.on_folder_opened)
         self.center_on_screen()
         icon_path = "src/resources/icons/app_icon.png"
         self.setWindowIcon(QIcon(icon_path))
         self.file_tree.folder_opened.connect(self.on_folder_opened)
     
     def on_folder_opened(self, path):
-        # Quando uma pasta é aberta, informa o terminal
-        self.terminal.set_working_directory(path)
+        if self.terminal:
+            self.terminal.set_working_directory(path)
+            self.terminal.display.setFocus()
 
-    # ... (TODOS OS OUTROS MÉTODOS COMO setup_actions, open_file, closeEvent, etc., PERMANECEM INALTERADOS)
     def setup_actions(self):
         open_action = QAction("Abrir", self)
         open_action.setShortcut("Ctrl+O")
