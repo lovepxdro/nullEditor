@@ -23,7 +23,6 @@ class CodeEditor(QPlainTextEdit):
 
         dark_theme_style = """
         QPlainTextEdit {
-            background-color: #282c34;
             color: #abb2bf;
             border: 1px solid #333;
             font-family: 'Courier New', monospace;
