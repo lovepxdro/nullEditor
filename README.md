@@ -4,9 +4,9 @@
 
 <h1 align="center">nullEditor</h1>
 
-Um editor de código minimalista e "arcaico" construído em Python e PySide6. O foco é forçar o usuário a interagir diretamente com suas ferramentas de desenvolvimento, sem "ajudas" de uma IDE moderna.
+Um editor de código minimalista e "arcaico" construído em Python e PySide6. O foco é forçar o usuário a interagir diretamente com suas ferramentas de desenvolvimento, sem "ajudas" de uma IDE moderna. A interação é feita primariamente pelo teclado, sem barras de menu.
 
-A interação é feita primariamente pelo teclado, sem barras de menu.
+Este projeto foi criado como um exercício de aprendizado pessoal.
 
 ## Screenshot
 
