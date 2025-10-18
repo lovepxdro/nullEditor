@@ -10,7 +10,7 @@ Este projeto foi criado como um exercício de aprendizado pessoal.
 
 ## Screenshot
 
-(Espaço para você adicionar um print da aplicação. Ex: `![Screenshot do nullEditor](screenshot.png)`)
+![Screenshot do nullEditor](src/resources/icons/screenshot.png)
 
 ## Funcionalidades
 
@@ -37,7 +37,7 @@ Este projeto foi criado como um exercício de aprendizado pessoal.
 
 1.  **Clone o repositório:**
     ```bash
-    git clone [URL-DO-SEU-REPOSITÓRIO-GIT]
+    git clone https://github.com/lovepxdro/nullEditor.git
     cd nullEditor
     ```
 
