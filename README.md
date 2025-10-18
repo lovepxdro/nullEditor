@@ -1,62 +1,39 @@
-# nullEditor
+<p align="center">
+  <img src="src/resources/icons/app_icon.png" alt="nullEditor Logo" width="150"/>
+</p>
 
-Um editor de código minimalista, "arcaico" e centrado no teclado, construído em Python e PySide6. Este projeto foi criado como um exercício de aprendizado pessoal, com foco em forçar o usuário a interagir diretamente com suas ferramentas de desenvolvimento.
+<h1 align="center">nullEditor</h1>
 
-Não é uma IDE "inteligente". É um ambiente visualmente unificado para os três pilares do desenvolvimento: o editor de texto, o explorador de arquivos e o terminal.
+Um editor de código minimalista e "arcaico" construído em Python e PySide6. O foco é forçar o usuário a interagir diretamente com suas ferramentas de desenvolvimento, sem "ajudas" de uma IDE moderna.
 
-`![Screenshot do nullEditor](screenshot.png)`
+A interação é feita primariamente pelo teclado, sem barras de menu.
 
-## Filosofia
+## Screenshot
 
-O `nullEditor` é intencionalmente simples. Ele parte do princípio de que um desenvolvedor deve saber como compilar seu código, gerenciar seus arquivos e navegar pelo sistema. A IDE não oferece "ajudas", mas sim um painel único e focado para evitar a troca de janelas.
-
-* **Sem Menus:** A interação é feita por atalhos de teclado, forçando o aprendizado.
-* **Editor "Burro":** O editor não possui syntax highlighting. Ele trata todo código (Python, Java, C, etc.) como texto puro.
-* **Terminal como Cérebro:** A compilação, execução, controle de versão (Git) e todas as outras tarefas são feitas explicitamente pelo usuário no terminal integrado.
+(Espaço para você adicionar um print da aplicação. Ex: `![Screenshot do nullEditor](screenshot.png)`)
 
 ## Funcionalidades
 
-### Geral
-* Layout de 3 painéis: Editor (centro), Explorador de Arquivos (direita) e Terminal (embaixo).
-* Tema escuro coeso.
-* Interface totalmente sem menus.
-* Feedback visual (`*` no título) para alterações não salvas.
-* Alerta de segurança ao tentar fechar ou abrir um novo arquivo com alterações não salvas.
-
-### Painel do Editor
-* Editor de texto agnóstico de linguagem.
-* Numeração de linhas.
-* Destaque da linha atual.
-
-### Painel Explorador de Arquivos
-* Inicia com um botão "Abrir Pasta" para selecionar um diretório de projeto.
-* Botão "Trocar Pasta" para mudar de projeto rapidamente.
-* Exibição limpa mostrando apenas nomes de arquivos e pastas (sem tamanho, data, etc.).
-* Filtro para exibir todos os arquivos, incluindo arquivos ocultos (ex: `.gitignore`).
-* **Duplo-clique** em um arquivo para abri-lo no editor.
-* **Menu de contexto (clique direito)** com as seguintes ações:
-    * Novo Arquivo
-    * Nova Pasta
-    * Renomear
-    * Deletar (com caixa de diálogo de confirmação)
-
-### Painel do Terminal
-* Emulador de terminal completo integrado.
-* Inicia o `cmd.exe` (Windows) ou `/bin/bash` (Linux/macOS) de forma persistente.
-* Começa na pasta "home" do usuário.
-* **Sincronização automática:** O terminal muda de diretório (`cd`) automaticamente para a pasta que você abre no Explorador de Arquivos.
-* Suporta comandos interativos (ex: `python`, `git commit`).
-* Intercepta comandos como `cls` e `clear` para limpar a tela do widget.
+* **Layout de 3 Painéis:** Editor de texto (centro), Explorador de Arquivos (direita) e Terminal (embaixo).
+* **Editor "Burro":** Trata todo código como texto puro, sem realce de sintaxe. Inclui numeração de linhas e destaque da linha atual.
+* **Explorador de Arquivos:**
+    * Permite abrir um diretório de projeto.
+    * Ações com clique direito: Novo Arquivo, Nova Pasta, Renomear e Deletar.
+    * Duplo-clique para abrir arquivos no editor.
+* **Terminal Integrado:**
+    * Um terminal (`cmd.exe` ou `/bin/bash`) que roda de forma persistente.
+    * Sincroniza automaticamente (`cd`) com a pasta aberta no explorador.
+    * Suporta comandos interativos (`python`, `git`, etc.).
+* **Feedback Visual:** Um `*` aparece no título da janela se houver alterações não salvas.
+* **Segurança:** Alerta o usuário antes de fechar ou abrir um novo arquivo se houver trabalho não salvo.
 
 ## Atalhos de Teclado
 
-Como não há menus, estas são as ações principais:
+* `Ctrl+S`: Salvar
+* `Ctrl+Shift+S`: Salvar Como...
+* `Ctrl+O`: Abrir Arquivo...
 
-* `Ctrl+S`: **Salvar** o arquivo atual.
-* `Ctrl+Shift+S`: **Salvar como...** (abre a caixa de diálogo).
-* `Ctrl+O`: **Abrir arquivo...** (abre a caixa de diálogo).
-
-## Como Executar (Ambiente de Desenvolvimento)
+## Como Executar
 
 1.  **Clone o repositório:**
     ```bash
@@ -64,36 +41,31 @@ Como não há menus, estas são as ações principais:
     cd nullEditor
     ```
 
-2.  **Crie um ambiente virtual:**
+2.  **Crie e ative um ambiente virtual:**
     ```bash
     python -m venv venv
+    source venv/bin/activate  # (ou .\venv\Scripts\activate no Windows)
     ```
 
-3.  **Ative o ambiente:**
-    * No Windows: `.\venv\Scripts\activate`
-    * No Linux/macOS: `source venv/bin/activate`
-
-4.  **Instale as dependências:**
+3.  **Instale as dependências:**
     ```bash
     pip install PySide6
     ```
 
-5.  **Execute a aplicação:**
+4.  **Execute a aplicação:**
     ```bash
     python run.py
     ```
 
-## Para Construir um Executável (Opcional)
+## Modificações Futuras (Roadmap)
 
-Você pode empacotar esta aplicação em um único arquivo `.exe` (ou binário) usando o PyInstaller.
+Aqui estão algumas ideias e melhorias planejadas para o `nullEditor`:
 
-1.  Instale o PyInstaller:
-    ```bash
-    pip install pyinstaller
-    ```
-
-2.  Execute o comando de build:
-    ```bash
-    pyinstaller --onefile --windowed --name nullEditor --icon=src/resources/icons/app_icon.ico run.py
-    ```
-    (Nota: Você pode precisar converter seu `.png` para um `.ico` para o ícone funcionar no Windows.)
+* **Simplificar Atalhos:** Considerar a remoção de `Ctrl+Shift+S` e `Ctrl+O`, já que essas ações podem ser executadas de forma mais intuitiva através da árvore de arquivos.
+* **Editor Ocioso:** A seção do editor não deve iniciar no modo de escrita; deve aguardar um arquivo ser aberto.
+* **Layout:** Redimensionar e reavaliar as proporções padrão das três seções.
+* **Multi-Terminal:** Adicionar a capacidade de abrir e gerenciar múltiplos terminais em abas.
+* **Melhorar Terminal:** Aprimorar o terminal, incluindo o mau funcionamento do comando `clear`/`cls` (que atualmente apaga todo o histórico).
+* **Distribuição:** Compilar o projeto em um executável (`.exe` ou similar) para facilitar a distribuição.
+* **Personalização:** Mover configurações (cores, fontes, etc.) para um arquivo `config.json` externo.
+* **Estilo de Pastas:** Modificar a formatação das pastas na árvore de arquivos para o formato `pasta\`.
