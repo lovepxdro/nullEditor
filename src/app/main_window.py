@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
 
         # --- MELHORIA: Porcentagens para o layout ---
         # [Editor, FileTree]
-        self.top_splitter_percentages = [0.70, 0.30] # 70% para o editor, 30% para a árvore
+        self.top_splitter_percentages = [0.80, 0.20] # 80% para o editor, 20% para a árvore
         # [TopSplitter (Editor/Tree), Terminal]
         self.main_splitter_percentages = [0.75, 0.25] # 75% para a área de cima, 25% para o terminal
         
