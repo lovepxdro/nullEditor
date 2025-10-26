@@ -1,0 +1,25 @@
+# Python
+###################
+# Byte-compiled/optimized/DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+###################
+# Ignora a pasta 'venv' recomendada no README.md
+venv/
+.venv/
+env/
+.env/
+
+# OS / IDE specific
+###################
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
