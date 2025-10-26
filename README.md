@@ -67,5 +67,4 @@ Aqui estão algumas ideias e melhorias planejadas para o `nullEditor`:
 * **Multi-Terminal:** Adicionar a capacidade de abrir e gerenciar múltiplos terminais em abas.
 * **Melhorar Terminal:** Aprimorar o terminal, incluindo o mau funcionamento do comando `clear`/`cls` (que atualmente apaga todo o histórico).
 * **Distribuição:** Compilar o projeto em um executável (`.exe` ou similar) para facilitar a distribuição.
-* **Personalização:** Mover configurações (cores, fontes, etc.) para um arquivo `config.json` externo.
 * **Estilo de Pastas:** Modificar a formatação das pastas na árvore de arquivos para o formato `pasta\`.

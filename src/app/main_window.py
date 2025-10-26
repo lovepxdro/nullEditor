@@ -4,8 +4,6 @@ import sys
 from src.app.widgets.editor_widget import CodeEditor
 from src.app.widgets.file_tree_widget import FileExplorer
 from src.app.widgets.terminal_widget import TerminalWidget
-# --- IMPORTAÇÃO PRINCIPAL DAS CONFIGURAÇÕES ---
-# NOVA LINHA (CORREÇÃO)
 from .settings_manager import load_settings
 
 from PySide6.QtWidgets import (
@@ -18,14 +16,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # --- 1. CARREGA AS CONFIGURAÇÕES ---
-        # self.settings agora contém o dicionário carregado do config.json
         self.settings = load_settings()
-        # --- FIM DO CARREGAMENTO ---
 
         self.setWindowTitle("nullEditor")
-        
-        # --- 2. USA AS CONFIGURAÇÕES (para a própria janela) ---
+
         self.resize(
             self.settings['window_size'][0], 
             self.settings['window_size'][1]
@@ -34,21 +28,17 @@ class MainWindow(QMainWindow):
         self.current_file_path = None
         self.is_dirty = False
 
-        # Carrega as proporções do layout direto do config
         self.top_splitter_percentages = self.settings['layout']['top_splitter']
         self.main_splitter_percentages = self.settings['layout']['main_splitter']
-        # --- FIM DO USO ---
         
         self._initial_sizes_set = False
 
         main_splitter = QSplitter(Qt.Orientation.Vertical)
         top_splitter = QSplitter(Qt.Orientation.Horizontal)
-        
-        # --- 3. PASSA (INJETA) AS CONFIGURAÇÕES (para os widgets) ---
+
         self.editor = CodeEditor(self.settings)
         self.file_tree = FileExplorer(self.settings)
         self.terminal = TerminalWidget(self.settings)
-        # --- FIM DA INJEÇÃO ---
         
         self.top_splitter = top_splitter
         self.main_splitter = main_splitter
@@ -66,15 +56,8 @@ class MainWindow(QMainWindow):
         self.file_tree.folder_opened.connect(self.on_folder_opened)
         self.center_on_screen()
         
-        # --- 2. USA AS CONFIGURAÇÕES (Ícone) ---
         icon_path = self.settings['paths']['icon']
         self.setWindowIcon(QIcon(icon_path))
-        # --- FIM DO USO ---
-    
-    #
-    # O restante do arquivo não muda, pois ele apenas
-    # *usa* os atributos que foram configurados acima.
-    #
     
     def _apply_splitter_percentages(self):
         """
@@ -82,7 +65,6 @@ class MainWindow(QMainWindow):
         nas porcentagens definidas em self (que vieram do config).
         """
         
-        # 1. Configura o splitter horizontal (Editor / Árvore)
         total_width = self.top_splitter.width()
         sizes_top = [
             int(total_width * self.top_splitter_percentages[0]),
@@ -91,7 +73,6 @@ class MainWindow(QMainWindow):
         sizes_top[-1] = total_width - sum(sizes_top[:-1])
         self.top_splitter.setSizes(sizes_top)
 
-        # 2. Configura o splitter vertical (Principal / Terminal)
         total_height = self.main_splitter.height()
         sizes_main = [
             int(total_height * self.main_splitter_percentages[0]),

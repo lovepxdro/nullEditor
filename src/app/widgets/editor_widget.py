@@ -21,12 +21,9 @@ class CodeEditor(QPlainTextEdit):
         super().__init__()
         self.settings = settings
         
-        # --- REFATORADO ---
-        # Pega a string CSS inteira diretamente do JSON
         editor_settings = self.settings.get('editor', {})
-        style_sheet = editor_settings.get('style_sheet', '') # Pega o CSS
+        style_sheet = editor_settings.get('style_sheet', '')
         self.setStyleSheet(style_sheet)
-        # --- FIM DA REFATORAÇÃO ---
 
         self.line_number_widget = LineNumberWidget(self, self.settings)
         
@@ -40,11 +37,9 @@ class CodeEditor(QPlainTextEdit):
         extra_selections = []
         if not self.isReadOnly():
             selection = QTextEdit.ExtraSelection()
-            
-            # --- CORRETO: Isto NÃO é CSS, é um valor de cor para QColor ---
+
             highlight_color_str = self.settings.get('editor', {}).get('current_line_highlight', '#3e4451')
             line_color = QColor(highlight_color_str)
-            # --- FIM ---
             
             selection.format.setBackground(line_color)
             selection.format.setProperty(QTextFormat.Property.FullWidthSelection, True)
@@ -86,9 +81,7 @@ class CodeEditor(QPlainTextEdit):
         top = self.blockBoundingGeometry(block).translated(self.contentOffset()).top()
         bottom = top + self.blockBoundingRect(block).height()
 
-        # --- CORRETO: Isto NÃO é CSS, é um valor de cor para QPainter ---
         line_number_color_str = self.settings.get('editor', {}).get('line_number_color', '#636d83')
-        # --- FIM ---
         
         while block.isValid() and top <= event.rect().bottom():
             if block.isVisible() and bottom >= event.rect().top():

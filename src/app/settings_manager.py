@@ -4,7 +4,6 @@ import json
 import sys
 import os
 
-# O caminho é relativo ao run.py, que está na raiz
 CONFIG_FILE_PATH = "config.json"
 
 def load_settings():

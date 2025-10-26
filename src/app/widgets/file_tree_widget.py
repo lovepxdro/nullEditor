@@ -9,33 +9,26 @@ from PySide6.QtCore import QDir, Signal, Qt
 from PySide6.QtGui import QAction
 
 class TreeView(QTreeView):
-    # --- MODIFICADO: Aceita 'settings' ---
     def __init__(self, settings):
         super().__init__()
         self.settings = settings
-    # --- FIM DA MODIFICAÇÃO ---
 
         self.setColumnHidden(1, True)
         self.setColumnHidden(2, True)
         self.setColumnHidden(3, True)
         self.setHeaderHidden(True)
         
-        # --- REFATORADO: Carrega CSS do JSON ---
-        # O estilo fixo foi removido
         tree_settings = self.settings.get('file_tree', {})
         style_sheet = tree_settings.get('style_sheet', '') # Pega o CSS
         self.setStyleSheet(style_sheet)
-        # --- FIM DA REFATORAÇÃO ---
 
 class FileExplorer(QWidget):
     file_selected = Signal(str)
     folder_opened = Signal(str)
 
-    # --- MODIFICADO: Aceita 'settings' ---
     def __init__(self, settings):
         super().__init__()
         self.settings = settings # Guarda as configurações
-    # --- FIM DA MODIFICAÇÃO ---
         
         self.stacked_widget = QStackedWidget()
         
@@ -54,9 +47,7 @@ class FileExplorer(QWidget):
         change_folder_button = QPushButton("Trocar Pasta")
         change_folder_button.clicked.connect(self.open_folder_dialog)
         
-        # --- MODIFICADO: Passa 'settings' para o TreeView ---
         self.tree_view = TreeView(self.settings)
-        # --- FIM DA MODIFICAÇÃO ---
         
         self.model = QFileSystemModel()
         self.model.setFilter(QDir.Filter.AllEntries | QDir.Filter.NoDotAndDotDot | QDir.Filter.Hidden)
@@ -76,11 +67,6 @@ class FileExplorer(QWidget):
 
         self.tree_view.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree_view.customContextMenuRequested.connect(self.show_context_menu)
-
-    #
-    # O restante do arquivo (show_context_menu, new_file, new_folder, etc.)
-    # não precisa de configurações de estilo e permanece idêntico.
-    #
     
     def show_context_menu(self, position):
         index = self.tree_view.indexAt(position)

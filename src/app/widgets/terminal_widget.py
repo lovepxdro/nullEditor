@@ -7,12 +7,10 @@ from PySide6.QtCore import QProcess, Qt, QDir
 from PySide6.QtGui import QTextCursor, QKeyEvent, QMouseEvent, QKeySequence, QColor, QTextOption
 
 class TerminalDisplay(QPlainTextEdit):
-    # --- MODIFICADO: Aceita 'settings' ---
     def __init__(self, process: QProcess, settings, parent=None):
         super().__init__(parent)
         self.process = process
         self.settings = settings
-    # --- FIM DA MODIFICAÇÃO ---
         
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setUndoRedoEnabled(False)
@@ -21,12 +19,9 @@ class TerminalDisplay(QPlainTextEdit):
         self.prompt = ""
         self.prompt_position = 0
 
-        # --- REFATORADO: Carrega CSS do JSON ---
-        # O estilo fixo foi removido
         term_settings = self.settings.get('terminal', {})
         style_sheet = term_settings.get('style_sheet', '') # Pega o CSS
         self.setStyleSheet(style_sheet)
-        # --- FIM DA REFATORAÇÃO ---
 
     def _insert_prompt(self):
         self.moveCursor(QTextCursor.MoveOperation.End)
@@ -74,19 +69,15 @@ class TerminalDisplay(QPlainTextEdit):
         super().keyPressEvent(event)
 
 class TerminalWidget(QWidget):
-    # --- MODIFICADO: Aceita 'settings' ---
     def __init__(self, settings):
         super().__init__()
         self.settings = settings # Guarda as configurações
-    # --- FIM DA MODIFICAÇÃO ---
         
         self.process = QProcess()
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        # --- MODIFICADO: Passa 'settings' para o TerminalDisplay ---
         self.display = TerminalDisplay(self.process, self.settings)
-        # --- FIM DA MODIFICAÇÃO ---
         
         layout.addWidget(self.display)
 
@@ -96,11 +87,6 @@ class TerminalWidget(QWidget):
         self.process.errorOccurred.connect(self.process_error)
 
         self.start_shell()
-
-    #
-    # O restante do arquivo (start_shell, set_working_directory, etc.)
-    # não precisa de configurações de estilo e permanece idêntico.
-    #
 
     def start_shell(self):
         self.display.clear()
