@@ -1,0 +1,30 @@
+{
+    "window_size": [
+        1200,
+        720
+    ],
+    "paths": {
+        "icon": "src/resources/icons/app_icon.png"
+    },
+    "layout": {
+        "top_splitter": [
+            0.8,
+            0.2
+        ],
+        "main_splitter": [
+            0.7,
+            0.3
+        ]
+    },
+    "editor": {
+        "style_sheet": "QPlainTextEdit { color: #abb2bf; border: none; font-family: 'Courier New', monospace; font-size: 14px; }",
+        "current_line_highlight": "#3e4451",
+        "line_number_color": "#636d83"
+    },
+    "file_tree": {
+        "style_sheet": "QTreeView { background-color: transparent; color: #abb2bf; border: none; }"
+    },
+    "terminal": {
+        "style_sheet": "QPlainTextEdit { color: #dcdfe4; border: none; font-family: 'Consolas', 'Courier New', monospace; font-size: 13px; padding: 5px; }"
+    }
+}

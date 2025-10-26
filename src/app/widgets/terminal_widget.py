@@ -7,9 +7,13 @@ from PySide6.QtCore import QProcess, Qt, QDir
 from PySide6.QtGui import QTextCursor, QKeyEvent, QMouseEvent, QKeySequence, QColor, QTextOption
 
 class TerminalDisplay(QPlainTextEdit):
-    def __init__(self, process: QProcess, parent=None):
+    # --- MODIFICADO: Aceita 'settings' ---
+    def __init__(self, process: QProcess, settings, parent=None):
         super().__init__(parent)
         self.process = process
+        self.settings = settings
+    # --- FIM DA MODIFICAÇÃO ---
+        
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setUndoRedoEnabled(False)
         self.setWordWrapMode(QTextOption.WrapMode.NoWrap)
@@ -17,15 +21,12 @@ class TerminalDisplay(QPlainTextEdit):
         self.prompt = ""
         self.prompt_position = 0
 
-        self.setStyleSheet("""
-            QPlainTextEdit {
-                color: #dcdfe4;
-                border: none;
-                font-family: "Consolas", "Courier New", monospace;
-                font-size: 13px;
-                padding: 5px;
-            }
-        """)
+        # --- REFATORADO: Carrega CSS do JSON ---
+        # O estilo fixo foi removido
+        term_settings = self.settings.get('terminal', {})
+        style_sheet = term_settings.get('style_sheet', '') # Pega o CSS
+        self.setStyleSheet(style_sheet)
+        # --- FIM DA REFATORAÇÃO ---
 
     def _insert_prompt(self):
         self.moveCursor(QTextCursor.MoveOperation.End)
@@ -73,13 +74,20 @@ class TerminalDisplay(QPlainTextEdit):
         super().keyPressEvent(event)
 
 class TerminalWidget(QWidget):
-    def __init__(self):
+    # --- MODIFICADO: Aceita 'settings' ---
+    def __init__(self, settings):
         super().__init__()
+        self.settings = settings # Guarda as configurações
+    # --- FIM DA MODIFICAÇÃO ---
+        
         self.process = QProcess()
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        self.display = TerminalDisplay(self.process)
+        # --- MODIFICADO: Passa 'settings' para o TerminalDisplay ---
+        self.display = TerminalDisplay(self.process, self.settings)
+        # --- FIM DA MODIFICAÇÃO ---
+        
         layout.addWidget(self.display)
 
         self.process.setProcessChannelMode(QProcess.ProcessChannelMode.MergedChannels)
@@ -88,6 +96,11 @@ class TerminalWidget(QWidget):
         self.process.errorOccurred.connect(self.process_error)
 
         self.start_shell()
+
+    #
+    # O restante do arquivo (start_shell, set_working_directory, etc.)
+    # não precisa de configurações de estilo e permanece idêntico.
+    #
 
     def start_shell(self):
         self.display.clear()

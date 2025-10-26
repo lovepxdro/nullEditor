@@ -9,44 +9,67 @@ from PySide6.QtCore import QDir, Signal, Qt
 from PySide6.QtGui import QAction
 
 class TreeView(QTreeView):
-    def __init__(self):
+    # --- MODIFICADO: Aceita 'settings' ---
+    def __init__(self, settings):
         super().__init__()
+        self.settings = settings
+    # --- FIM DA MODIFICAÇÃO ---
+
         self.setColumnHidden(1, True)
         self.setColumnHidden(2, True)
         self.setColumnHidden(3, True)
         self.setHeaderHidden(True)
-        self.setStyleSheet("background-color: transparent; color: #abb2bf; border: none;")
+        
+        # --- REFATORADO: Carrega CSS do JSON ---
+        # O estilo fixo foi removido
+        tree_settings = self.settings.get('file_tree', {})
+        style_sheet = tree_settings.get('style_sheet', '') # Pega o CSS
+        self.setStyleSheet(style_sheet)
+        # --- FIM DA REFATORAÇÃO ---
 
 class FileExplorer(QWidget):
     file_selected = Signal(str)
     folder_opened = Signal(str)
 
-    def __init__(self):
+    # --- MODIFICADO: Aceita 'settings' ---
+    def __init__(self, settings):
         super().__init__()
+        self.settings = settings # Guarda as configurações
+    # --- FIM DA MODIFICAÇÃO ---
+        
         self.stacked_widget = QStackedWidget()
         
         self.welcome_screen = QWidget()
         welcome_layout = QVBoxLayout(self.welcome_screen)
-        open_folder_button = QPushButton("Abrir Projeto")
+        open_folder_button = QPushButton("Abrir Pasta")
         open_folder_button.clicked.connect(self.open_folder_dialog)
         welcome_layout.addWidget(open_folder_button)
         welcome_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
         self.tree_view_screen = QWidget()
         tree_view_layout = QVBoxLayout(self.tree_view_screen)
         tree_view_layout.setContentsMargins(0, 5, 0, 0)
         tree_view_layout.setSpacing(5)
-        change_folder_button = QPushButton("Trocar Projeto")
+        
+        change_folder_button = QPushButton("Trocar Pasta")
         change_folder_button.clicked.connect(self.open_folder_dialog)
-        self.tree_view = TreeView()
+        
+        # --- MODIFICADO: Passa 'settings' para o TreeView ---
+        self.tree_view = TreeView(self.settings)
+        # --- FIM DA MODIFICAÇÃO ---
+        
         self.model = QFileSystemModel()
         self.model.setFilter(QDir.Filter.AllEntries | QDir.Filter.NoDotAndDotDot | QDir.Filter.Hidden)
         self.tree_view.setModel(self.model)
         self.tree_view.doubleClicked.connect(self.on_item_double_clicked)
+        
         tree_view_layout.addWidget(change_folder_button)
         tree_view_layout.addWidget(self.tree_view)
+        
         self.stacked_widget.addWidget(self.welcome_screen)
         self.stacked_widget.addWidget(self.tree_view_screen)
         self.stacked_widget.setCurrentWidget(self.welcome_screen)
+        
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(self.stacked_widget)
@@ -54,6 +77,11 @@ class FileExplorer(QWidget):
         self.tree_view.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tree_view.customContextMenuRequested.connect(self.show_context_menu)
 
+    #
+    # O restante do arquivo (show_context_menu, new_file, new_folder, etc.)
+    # não precisa de configurações de estilo e permanece idêntico.
+    #
+    
     def show_context_menu(self, position):
         index = self.tree_view.indexAt(position)
         path = self.model.filePath(index) if index.isValid() else self.model.rootPath()

@@ -26,6 +26,7 @@ Este projeto foi criado como um exercício de aprendizado pessoal.
     * Suporta comandos interativos (`python`, `git`, etc.).
 * **Feedback Visual:** Um `*` aparece no título da janela se houver alterações não salvas.
 * **Segurança:** Alerta o usuário antes de fechar ou abrir um novo arquivo se houver trabalho não salvo.
+* **Personalização Externa:** Todas as configurações de personalização (cores, fontes, proporções de layout) foram movidas para um arquivo `config.json` externo, localizado na raiz do projeto.
 
 ## Atalhos de Teclado
 
@@ -63,7 +64,6 @@ Aqui estão algumas ideias e melhorias planejadas para o `nullEditor`:
 
 * **Simplificar Atalhos:** Considerar a remoção de `Ctrl+Shift+S` e `Ctrl+O`, já que essas ações podem ser executadas de forma mais intuitiva através da árvore de arquivos.
 * **Editor Ocioso:** A seção do editor não deve iniciar no modo de escrita; deve aguardar um arquivo ser aberto.
-* **Layout:** Redimensionar e reavaliar as proporções padrão das três seções.
 * **Multi-Terminal:** Adicionar a capacidade de abrir e gerenciar múltiplos terminais em abas.
 * **Melhorar Terminal:** Aprimorar o terminal, incluindo o mau funcionamento do comando `clear`/`cls` (que atualmente apaga todo o histórico).
 * **Distribuição:** Compilar o projeto em um executável (`.exe` ou similar) para facilitar a distribuição.
