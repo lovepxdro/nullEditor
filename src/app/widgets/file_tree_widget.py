@@ -34,7 +34,7 @@ class FileExplorer(QWidget):
         
         self.welcome_screen = QWidget()
         welcome_layout = QVBoxLayout(self.welcome_screen)
-        open_folder_button = QPushButton("Abrir Pasta")
+        open_folder_button = QPushButton("Abrir Projeto")
         open_folder_button.clicked.connect(self.open_folder_dialog)
         welcome_layout.addWidget(open_folder_button)
         welcome_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -44,7 +44,7 @@ class FileExplorer(QWidget):
         tree_view_layout.setContentsMargins(0, 5, 0, 0)
         tree_view_layout.setSpacing(5)
         
-        change_folder_button = QPushButton("Trocar Pasta")
+        change_folder_button = QPushButton("Trocar Projeto")
         change_folder_button.clicked.connect(self.open_folder_dialog)
         
         self.tree_view = TreeView(self.settings)

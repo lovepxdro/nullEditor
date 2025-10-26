@@ -10,12 +10,12 @@ Este projeto foi criado como um exercício de aprendizado pessoal.
 
 ## Screenshot
 
-![Screenshot do nullEditor](src/resources/icons/screenshot.png)
+![Screenshot do nullEditor](src/resources/screenshot.png)
 
 ## Funcionalidades
 
 * **Layout de 3 Painéis:** Editor de texto (centro), Explorador de Arquivos (direita) e Terminal (embaixo).
-* **Editor "Burro":** Trata todo código como texto puro, sem realce de sintaxe. Inclui numeração de linhas e destaque da linha atual.
+* **Editor "Burro":** Trata todo código como texto puro. Inclui numeração de linhas e destaque da linha atual.
 * **Explorador de Arquivos:**
     * Permite abrir um diretório de projeto.
     * Ações com clique direito: Novo Arquivo, Nova Pasta, Renomear e Deletar.
@@ -26,13 +26,13 @@ Este projeto foi criado como um exercício de aprendizado pessoal.
     * Suporta comandos interativos (`python`, `git`, etc.).
 * **Feedback Visual:** Um `*` aparece no título da janela se houver alterações não salvas.
 * **Segurança:** Alerta o usuário antes de fechar ou abrir um novo arquivo se houver trabalho não salvo.
-* **Personalização Externa:** Todas as configurações de personalização (cores, fontes, proporções de layout) foram movidas para um arquivo `config.json` externo, localizado na raiz do projeto.
+* **Personalização:** Todas as configurações de personalização ficam em um arquivo `config.json` externo.
 
 ## Atalhos de Teclado
 
 * `Ctrl+S`: Salvar
-* `Ctrl+Shift+S`: Salvar Como...
-* `Ctrl+O`: Abrir Arquivo...
+* `Ctrl+Shift+S`: Salvar Como
+* `Ctrl+O`: Abrir Arquivo
 
 ## Como Executar
 
@@ -58,13 +58,13 @@ Este projeto foi criado como um exercício de aprendizado pessoal.
     python run.py
     ```
 
-## Modificações Futuras (Roadmap)
+## Modificações Futuras
 
 Aqui estão algumas ideias e melhorias planejadas para o `nullEditor`:
 
-* **Simplificar Atalhos:** Considerar a remoção de `Ctrl+Shift+S` e `Ctrl+O`, já que essas ações podem ser executadas de forma mais intuitiva através da árvore de arquivos.
-* **Editor Ocioso:** A seção do editor não deve iniciar no modo de escrita; deve aguardar um arquivo ser aberto.
-* **Multi-Terminal:** Adicionar a capacidade de abrir e gerenciar múltiplos terminais em abas.
-* **Melhorar Terminal:** Aprimorar o terminal, incluindo o mau funcionamento do comando `clear`/`cls` (que atualmente apaga todo o histórico).
-* **Distribuição:** Compilar o projeto em um executável (`.exe` ou similar) para facilitar a distribuição.
-* **Estilo de Pastas:** Modificar a formatação das pastas na árvore de arquivos para o formato `pasta\`.
+* Considerar a remoção de `Ctrl+Shift+S` e `Ctrl+O`.
+* A seção do editor não deve iniciar no modo de escrita; deve aguardar um arquivo ser aberto.
+* Adicionar a capacidade de abrir e gerenciar múltiplos terminais em abas.
+* Aprimorar o terminal, incluindo o mau funcionamento do comando `clear`/`cls`
+* Compilar o projeto em um executável (`.exe` ou similar) para facilitar a distribuição.
+* Revisar toda a estrutura e código do projeto.
